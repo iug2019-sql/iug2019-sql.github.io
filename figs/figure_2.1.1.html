@@ -1,0 +1,21 @@
+<!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%"><span style="color: #888888">-- this will query for all patron records in the system, and then output their</span>
+<span style="color: #888888">-- patron record_id, record_num, and all the notes fields delimited by a `\n` </span>
+<span style="color: #008800; font-weight: bold">SELECT</span>
+r.id,
+r.record_type_code,
+r.record_num,
+(
+	<span style="color: #008800; font-weight: bold">SELECT</span>
+	string_agg(v.field_content, <span style="background-color: #fff0f0">&#39;\n&#39;</span> <span style="color: #008800; font-weight: bold">ORDER</span> <span style="color: #008800; font-weight: bold">BY</span> v.occ_num)
+	<span style="color: #008800; font-weight: bold">FROM</span>
+	sierra_view.varfield <span style="color: #008800; font-weight: bold">as</span> v
+	<span style="color: #008800; font-weight: bold">WHERE</span>
+	v.record_id <span style="color: #333333">=</span> r.id
+	<span style="color: #008800; font-weight: bold">AND</span> v.varfield_type_code <span style="color: #333333">=</span> <span style="background-color: #fff0f0">&#39;x&#39;</span>
+) <span style="color: #008800; font-weight: bold">as</span> patron_notes
+<span style="color: #008800; font-weight: bold">FROM</span>
+sierra_view.record_metadata <span style="color: #008800; font-weight: bold">as</span> r
+<span style="color: #008800; font-weight: bold">WHERE</span>
+r.record_type_code <span style="color: #333333">=</span> <span style="background-color: #fff0f0">&#39;p&#39;</span>
+<span style="color: #888888">-- LIMIT 100</span>
+</pre></div>

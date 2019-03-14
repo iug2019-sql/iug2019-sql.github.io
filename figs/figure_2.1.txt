@@ -1,0 +1,15 @@
+SELECT
+p.best_title
+
+FROM
+sierra_view.bib_record_property AS p
+WHERE
+p.bib_record_id IN (
+	SELECT
+	r.id
+	FROM
+	sierra_view.record_metadata AS r
+	WHERE
+	r.record_type_code || r.campus_code = 'b'
+	AND r.creation_date_gmt >= NOW() - INTERVAL '12 hours'
+)
