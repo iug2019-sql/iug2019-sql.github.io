@@ -1,0 +1,16 @@
+<!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%"><span style="color: #008800; font-weight: bold">SELECT</span>
+<span style="color: #008800; font-weight: bold">MIN</span>(h.placed_gmt) <span style="color: #008800; font-weight: bold">AS</span> min_hold_placed,
+<span style="color: #008800; font-weight: bold">MAX</span>(h.placed_gmt) <span style="color: #008800; font-weight: bold">AS</span> max_hold_placed,
+<span style="color: #008800; font-weight: bold">AVG</span>(
+	AGE(h.placed_gmt)
+) <span style="color: #008800; font-weight: bold">AS</span> avg_age_hold,
+<span style="color: #888888">-- this isn&#39;t very useful to us, but demonstrates `SUM()`</span>
+<span style="color: #008800; font-weight: bold">EXTRACT</span>(
+	YEARS <span style="color: #008800; font-weight: bold">FROM</span> <span style="color: #008800; font-weight: bold">SUM</span>(
+		AGE(h.placed_gmt)
+	)
+) <span style="color: #008800; font-weight: bold">AS</span> sum_years_holds
+
+<span style="color: #008800; font-weight: bold">FROM</span>
+sierra_view.<span style="color: #008800; font-weight: bold">hold</span> <span style="color: #008800; font-weight: bold">as</span> h
+</pre></div>
