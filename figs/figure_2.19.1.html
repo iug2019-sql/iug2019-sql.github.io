@@ -1,0 +1,42 @@
+<!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%"><span style="color: #008800; font-weight: bold">DROP</span> <span style="color: #008800; font-weight: bold">TABLE</span> IF <span style="color: #008800; font-weight: bold">EXISTS</span> temp_hold_data;
+
+<span style="color: #008800; font-weight: bold">CREATE</span> TEMP <span style="color: #008800; font-weight: bold">TABLE</span> temp_hold_data <span style="color: #008800; font-weight: bold">AS</span>
+<span style="color: #008800; font-weight: bold">SELECT</span>
+<span style="color: #008800; font-weight: bold">CASE</span>
+<span style="color: #008800; font-weight: bold">WHEN</span> r.record_type_code <span style="color: #333333">=</span> <span style="background-color: #fff0f0">&#39;i&#39;</span> <span style="color: #008800; font-weight: bold">THEN</span> (
+	<span style="color: #008800; font-weight: bold">SELECT</span>
+	l.bib_record_id
+	<span style="color: #008800; font-weight: bold">FROM</span>
+	sierra_view.bib_record_item_record_link <span style="color: #008800; font-weight: bold">as</span> l
+	<span style="color: #008800; font-weight: bold">WHERE</span>
+	l.item_record_id <span style="color: #333333">=</span> h.record_id
+	<span style="color: #008800; font-weight: bold">LIMIT</span> <span style="color: #0000DD; font-weight: bold">1</span>
+)
+<span style="color: #008800; font-weight: bold">WHEN</span> r.record_type_code <span style="color: #333333">=</span> <span style="background-color: #fff0f0">&#39;j&#39;</span> <span style="color: #008800; font-weight: bold">THEN</span> (
+	<span style="color: #008800; font-weight: bold">SELECT</span>
+	l.bib_record_id
+	<span style="color: #008800; font-weight: bold">FROM</span>
+	sierra_view.bib_record_volume_record_link <span style="color: #008800; font-weight: bold">as</span> l
+	<span style="color: #008800; font-weight: bold">WHERE</span>
+	l.volume_record_id <span style="color: #333333">=</span> h.record_id
+	<span style="color: #008800; font-weight: bold">LIMIT</span> <span style="color: #0000DD; font-weight: bold">1</span>
+)
+<span style="color: #008800; font-weight: bold">WHEN</span> r.record_type_code <span style="color: #333333">=</span> <span style="background-color: #fff0f0">&#39;b&#39;</span> <span style="color: #008800; font-weight: bold">THEN</span> (
+	h.record_id
+)
+<span style="color: #008800; font-weight: bold">ELSE</span> <span style="color: #008800; font-weight: bold">NULL</span>
+<span style="color: #008800; font-weight: bold">END</span> <span style="color: #008800; font-weight: bold">AS</span> bib_record_id,
+r.record_type_code, r.record_num,
+p.ptype_code, h.<span style="color: #333333">*</span>
+<span style="color: #008800; font-weight: bold">FROM</span>
+sierra_view.<span style="color: #008800; font-weight: bold">hold</span> <span style="color: #008800; font-weight: bold">AS</span> h
+<span style="color: #008800; font-weight: bold">JOIN</span>
+sierra_view.record_metadata <span style="color: #008800; font-weight: bold">AS</span> r
+<span style="color: #008800; font-weight: bold">ON</span>
+  r.id <span style="color: #333333">=</span> h.record_id
+<span style="color: #008800; font-weight: bold">JOIN</span>
+sierra_view.patron_record <span style="color: #008800; font-weight: bold">AS</span> p
+<span style="color: #008800; font-weight: bold">ON</span>
+  p.record_id <span style="color: #333333">=</span> h.patron_record_id
+;
+</pre></div>
