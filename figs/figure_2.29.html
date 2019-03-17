@@ -1,0 +1,26 @@
+<!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%"><span style="color: #008800; font-weight: bold">SELECT</span>
+<span style="color: #008800; font-weight: bold">COUNT</span>(<span style="color: #333333">*</span>)
+<span style="color: #008800; font-weight: bold">FROM</span>
+sierra_view.bib_record_item_record_link <span style="color: #008800; font-weight: bold">AS</span> l
+<span style="color: #008800; font-weight: bold">JOIN</span>
+sierra_view.item_record <span style="color: #008800; font-weight: bold">AS</span> i
+<span style="color: #008800; font-weight: bold">ON</span>
+  i.record_id <span style="color: #333333">=</span> l.item_record_id
+<span style="color: #008800; font-weight: bold">LEFT</span> <span style="color: #008800; font-weight: bold">OUTER</span> <span style="color: #008800; font-weight: bold">JOIN</span>
+sierra_view.checkout <span style="color: #008800; font-weight: bold">as</span> <span style="color: #008800; font-weight: bold">c</span>
+<span style="color: #008800; font-weight: bold">ON</span>
+  <span style="color: #008800; font-weight: bold">c</span>.item_record_id <span style="color: #333333">=</span> l.item_record_id
+<span style="color: #008800; font-weight: bold">WHERE</span>
+l.bib_record_id <span style="color: #333333">=</span> d.bib_record_id
+<span style="color: #888888">-- item has a status code of something that we&#39;d want to see 	</span>
+<span style="color: #008800; font-weight: bold">AND</span> i.item_status_code <span style="color: #008800; font-weight: bold">IN</span> (
+	<span style="background-color: #fff0f0">&#39;-&#39;</span>, <span style="background-color: #fff0f0">&#39;!&#39;</span>, <span style="background-color: #fff0f0">&#39;b&#39;</span>, <span style="background-color: #fff0f0">&#39;p&#39;</span>, <span style="background-color: #fff0f0">&#39;(&#39;</span>, <span style="background-color: #fff0f0">&#39;@&#39;</span>, <span style="background-color: #fff0f0">&#39;)&#39;</span>, <span style="background-color: #fff0f0">&#39;_&#39;</span>, <span style="background-color: #fff0f0">&#39;=&#39;</span>, <span style="background-color: #fff0f0">&#39;+&#39;</span>
+)
+<span style="color: #008800; font-weight: bold">AND</span> COALESCE(
+	<span style="color: #888888">--if this age is &gt;= 60 days, it&#39;ll return FALSE, </span>
+	<span style="color: #888888">-- and not count as an &quot;available item&quot;</span>
+	age(<span style="color: #008800; font-weight: bold">c</span>.due_gmt) <span style="color: #333333">&lt;</span> <span style="background-color: #fff0f0">&#39;60 days&#39;</span>::<span style="color: #007020">INTERVAL</span>,
+	<span style="color: #888888">-- if there is no due_gmt value (NULL) return TRUE 		</span>
+	<span style="color: #008800; font-weight: bold">TRUE</span>
+)
+</pre></div>
