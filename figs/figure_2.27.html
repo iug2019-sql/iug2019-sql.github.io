@@ -1,0 +1,84 @@
+<!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%"><span style="color: #008800; font-weight: bold">DROP</span> <span style="color: #008800; font-weight: bold">TABLE</span> IF <span style="color: #008800; font-weight: bold">EXISTS</span> temp_hold_data;
+
+<span style="color: #008800; font-weight: bold">CREATE</span> TEMP <span style="color: #008800; font-weight: bold">TABLE</span> temp_hold_data <span style="color: #008800; font-weight: bold">AS</span>
+<span style="color: #008800; font-weight: bold">SELECT</span>
+<span style="color: #008800; font-weight: bold">CASE</span>
+<span style="color: #008800; font-weight: bold">WHEN</span> r.record_type_code <span style="color: #333333">=</span> <span style="background-color: #fff0f0">&#39;i&#39;</span> <span style="color: #008800; font-weight: bold">THEN</span> (
+	<span style="color: #008800; font-weight: bold">SELECT</span>
+	l.bib_record_id
+	<span style="color: #008800; font-weight: bold">FROM</span>
+	sierra_view.bib_record_item_record_link <span style="color: #008800; font-weight: bold">as</span> l
+	<span style="color: #008800; font-weight: bold">WHERE</span>
+	l.item_record_id <span style="color: #333333">=</span> h.record_id
+	<span style="color: #008800; font-weight: bold">LIMIT</span> <span style="color: #0000DD; font-weight: bold">1</span>
+)
+<span style="color: #008800; font-weight: bold">WHEN</span> r.record_type_code <span style="color: #333333">=</span> <span style="background-color: #fff0f0">&#39;j&#39;</span> <span style="color: #008800; font-weight: bold">THEN</span> (
+	<span style="color: #008800; font-weight: bold">SELECT</span>
+	l.bib_record_id
+	<span style="color: #008800; font-weight: bold">FROM</span>
+	sierra_view.bib_record_volume_record_link <span style="color: #008800; font-weight: bold">as</span> l
+	<span style="color: #008800; font-weight: bold">WHERE</span>
+	l.volume_record_id <span style="color: #333333">=</span> h.record_id
+	<span style="color: #008800; font-weight: bold">LIMIT</span> <span style="color: #0000DD; font-weight: bold">1</span>
+)
+<span style="color: #008800; font-weight: bold">WHEN</span> r.record_type_code <span style="color: #333333">=</span> <span style="background-color: #fff0f0">&#39;b&#39;</span> <span style="color: #008800; font-weight: bold">THEN</span> (
+	h.record_id
+)
+<span style="color: #008800; font-weight: bold">ELSE</span> <span style="color: #008800; font-weight: bold">NULL</span>
+<span style="color: #008800; font-weight: bold">END</span> <span style="color: #008800; font-weight: bold">AS</span> bib_record_id,
+r.record_type_code, r.record_num,
+p.ptype_code, h.<span style="color: #333333">*</span>
+<span style="color: #008800; font-weight: bold">FROM</span>
+sierra_view.<span style="color: #008800; font-weight: bold">hold</span> <span style="color: #008800; font-weight: bold">AS</span> h
+<span style="color: #008800; font-weight: bold">JOIN</span>
+sierra_view.record_metadata <span style="color: #008800; font-weight: bold">AS</span> r
+<span style="color: #008800; font-weight: bold">ON</span>
+  r.id <span style="color: #333333">=</span> h.record_id
+<span style="color: #008800; font-weight: bold">JOIN</span>
+sierra_view.patron_record <span style="color: #008800; font-weight: bold">AS</span> p
+<span style="color: #008800; font-weight: bold">ON</span>
+  p.record_id <span style="color: #333333">=</span> h.patron_record_id
+;
+
+<span style="color: #008800; font-weight: bold">CREATE</span> <span style="color: #008800; font-weight: bold">INDEX</span> temp_hold_data_bib_record_id <span style="color: #008800; font-weight: bold">ON</span> temp_hold_data(bib_record_id);
+<span style="color: #008800; font-weight: bold">ANALYZE</span> temp_hold_data;
+<span style="color: #008800; font-weight: bold">EXPLAIN</span>
+<span style="color: #008800; font-weight: bold">WITH</span> distinct_titles <span style="color: #008800; font-weight: bold">AS</span> (
+	<span style="color: #008800; font-weight: bold">SELECT</span>
+	t.bib_record_id,
+	string_agg(t.pickup_location_code::<span style="color: #007020">TEXT</span>, <span style="background-color: #fff0f0">&#39;,&#39;</span>) <span style="color: #008800; font-weight: bold">AS</span> pickup_locations,
+	<span style="color: #008800; font-weight: bold">COUNT</span>(<span style="color: #333333">*</span>) <span style="color: #008800; font-weight: bold">as</span> count_holds_title
+	<span style="color: #008800; font-weight: bold">FROM</span>
+	temp_hold_data <span style="color: #008800; font-weight: bold">as</span> t
+	<span style="color: #008800; font-weight: bold">GROUP</span> <span style="color: #008800; font-weight: bold">BY</span>
+	t.bib_record_id
+)
+
+<span style="color: #008800; font-weight: bold">SELECT</span>
+d.<span style="color: #333333">*</span>
+<span style="color: #008800; font-weight: bold">FROM</span>
+distinct_titles <span style="color: #008800; font-weight: bold">AS</span> d
+<span style="color: #008800; font-weight: bold">ORDER</span> <span style="color: #008800; font-weight: bold">BY</span>
+d.count_holds_title <span style="color: #008800; font-weight: bold">DESC</span>
+;
+
+<span style="color: #888888">-- EXPLAIN of the above without an `INDEX`</span>
+<span style="color: #888888">--</span>
+<span style="color: #888888">-- Sort  (cost=3847.58..3848.08 rows=200 width=48)</span>
+<span style="color: #888888">--   Sort Key: d.count_holds_title</span>
+<span style="color: #888888">--   CTE distinct_titles</span>
+<span style="color: #888888">--     -&gt;  HashAggregate  (cost=3833.44..3835.94 rows=200 width=32)</span>
+<span style="color: #888888">--           Group Key: t.bib_record_id</span>
+<span style="color: #888888">--           -&gt;  Seq Scan on temp_hold_data t  (cost=0.00..3701.25 rows=17625 width=32)</span>
+<span style="color: #888888">--   -&gt;  CTE Scan on distinct_titles d  (cost=0.00..4.00 rows=200 width=48)</span>
+<span style="color: #888888">--</span>
+<span style="color: #888888">--</span>
+<span style="color: #888888">-- EXPLAIN of the above WITH an `INDEX` created</span>
+<span style="color: #888888">-- Sort  (cost=20505.11..20533.06 rows=11179 width=48)</span>
+<span style="color: #888888">--   Sort Key: d.count_holds_title</span>
+<span style="color: #888888">--   CTE distinct_titles</span>
+<span style="color: #888888">--     -&gt;  GroupAggregate  (cost=0.42..19529.83 rows=11179 width=10)</span>
+<span style="color: #888888">--           Group Key: t.bib_record_id</span>
+<span style="color: #888888">--           -&gt;  Index Scan using temp_hold_data_bib_record_id on temp_hold_data t  (cost=0.42..17608.67 rows=237523 width=10)</span>
+<span style="color: #888888">--   -&gt;  CTE Scan on distinct_titles d  (cost=0.00..223.58 rows=11179 width=48)</span>
+</pre></div>
