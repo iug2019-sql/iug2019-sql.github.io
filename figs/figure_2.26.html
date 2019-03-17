@@ -1,0 +1,21 @@
+<!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%"><span style="color: #008800; font-weight: bold">CREATE</span> <span style="color: #008800; font-weight: bold">INDEX</span> temp_hold_data_bib_record_id <span style="color: #008800; font-weight: bold">ON</span> temp_hold_data(bib_record_id);
+<span style="color: #008800; font-weight: bold">ANALYZE</span> temp_hold_data;
+<span style="color: #008800; font-weight: bold">WITH</span> distinct_titles <span style="color: #008800; font-weight: bold">AS</span> (
+	<span style="color: #008800; font-weight: bold">SELECT</span>
+	t.bib_record_id,
+	string_agg(t.pickup_location_code::<span style="color: #007020">TEXT</span>, <span style="background-color: #fff0f0">&#39;,&#39;</span>) <span style="color: #008800; font-weight: bold">AS</span> pickup_locations,
+	<span style="color: #008800; font-weight: bold">COUNT</span>(<span style="color: #333333">*</span>) <span style="color: #008800; font-weight: bold">as</span> count_holds_title
+	<span style="color: #008800; font-weight: bold">FROM</span>
+	temp_hold_data <span style="color: #008800; font-weight: bold">as</span> t
+	<span style="color: #008800; font-weight: bold">GROUP</span> <span style="color: #008800; font-weight: bold">BY</span>
+	t.bib_record_id
+)
+
+<span style="color: #008800; font-weight: bold">SELECT</span>
+d.<span style="color: #333333">*</span>
+<span style="color: #008800; font-weight: bold">FROM</span>
+distinct_titles <span style="color: #008800; font-weight: bold">AS</span> d
+<span style="color: #008800; font-weight: bold">ORDER</span> <span style="color: #008800; font-weight: bold">BY</span>
+d.count_holds_title <span style="color: #008800; font-weight: bold">DESC</span>
+;
+</pre></div>
