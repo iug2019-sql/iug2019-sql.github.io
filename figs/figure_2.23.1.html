@@ -1,0 +1,10 @@
+<!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%"><span style="color: #008800; font-weight: bold">SELECT</span>
+<span style="color: #333333">*</span>
+<span style="color: #008800; font-weight: bold">FROM</span>
+sierra_view.circ_trans <span style="color: #008800; font-weight: bold">AS</span> <span style="color: #008800; font-weight: bold">c</span>
+<span style="color: #008800; font-weight: bold">WHERE</span>
+<span style="color: #008800; font-weight: bold">c</span>.transaction_gmt <span style="color: #333333">&lt;=</span> NOW() <span style="color: #333333">-</span> <span style="color: #008800; font-weight: bold">CAST</span>(<span style="background-color: #fff0f0">&#39;1 hour&#39;</span> <span style="color: #008800; font-weight: bold">AS</span> <span style="color: #007020">INTERVAL</span>)
+<span style="color: #008800; font-weight: bold">AND</span> <span style="color: #008800; font-weight: bold">c</span>.transaction_gmt <span style="color: #333333">&gt;</span> NOW() <span style="color: #333333">-</span> <span style="color: #008800; font-weight: bold">CAST</span>(<span style="background-color: #fff0f0">&#39;2 hours&#39;</span> <span style="color: #008800; font-weight: bold">AS</span> <span style="color: #007020">INTERVAL</span>)
+<span style="color: #008800; font-weight: bold">ORDER</span> <span style="color: #008800; font-weight: bold">BY</span>
+<span style="color: #008800; font-weight: bold">c</span>.transaction_gmt
+</pre></div>
