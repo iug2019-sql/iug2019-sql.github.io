@@ -1,0 +1,21 @@
+<!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%"><span style="color: #008800; font-weight: bold">SELECT</span>
+r.record_type_code,
+p.ptype_code,
+<span style="color: #008800; font-weight: bold">COUNT</span>(r.record_type_code) <span style="color: #008800; font-weight: bold">AS</span> count_holds
+<span style="color: #008800; font-weight: bold">FROM</span>
+sierra_view.<span style="color: #008800; font-weight: bold">hold</span> <span style="color: #008800; font-weight: bold">AS</span> h
+<span style="color: #008800; font-weight: bold">JOIN</span>
+sierra_view.record_metadata <span style="color: #008800; font-weight: bold">AS</span> r
+<span style="color: #008800; font-weight: bold">ON</span>
+  r.id <span style="color: #333333">=</span> h.record_id
+<span style="color: #008800; font-weight: bold">JOIN</span>
+sierra_view.patron_record <span style="color: #008800; font-weight: bold">AS</span> p
+<span style="color: #008800; font-weight: bold">ON</span>
+  p.record_id <span style="color: #333333">=</span> h.patron_record_id
+<span style="color: #008800; font-weight: bold">GROUP</span> <span style="color: #008800; font-weight: bold">BY</span>
+r.record_type_code,
+p.ptype_code
+<span style="color: #008800; font-weight: bold">ORDER</span> <span style="color: #008800; font-weight: bold">BY</span>
+r.record_type_code,
+p.ptype_code
+</pre></div>
