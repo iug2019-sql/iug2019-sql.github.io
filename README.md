@@ -1,10 +1,15 @@
 # iug2019-sql.github.io
 
-### Making posted code more readable:
-http://hilite.me/ : convert sql into pretty-printed html
-	Use:
-		Language: SQL
-		Style: colorful
-	Post:
-		.png for slide
-		.html for linking figures
+How to SQL (Sierra)
+
+(https://twitter.com/hashtag/IUG2019)
+
+* JEREMY GOLDSTEIN: Minuteman Library Network
+* PHIL SHIRLEY: Cuyahoga Falls Library
+* RAY VOELKER: The Public Library of Cincinnati and Hamilton County
+
+Part 1:
+
+
+Part 2:
+(https://iug2019-sql.github.io/iug2019-how_to_sql_part_2.pdf)
