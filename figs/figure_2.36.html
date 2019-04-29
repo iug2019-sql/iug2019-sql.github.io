@@ -1,0 +1,21 @@
+<!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%"><span style="color: #888888">-- return ISBN number (or null, if number doesn&#39;t match expected format of ISBN</span>
+<span style="color: #888888">-- and record number associated with the ISBN</span>
+<span style="color: #008800; font-weight: bold">SELECT</span>
+v.record_id, 
+(regexp_matches(
+	v.field_content,
+	<span style="color: #888888">-- the regex to match on (10 or 13 digits, with the possibility of the </span>
+	<span style="color: #888888">-- &#39;X&#39; character in the check-digit spot)</span>
+	<span style="background-color: #fff0f0">&#39;[0-9]{9,10}[x]{0,1}|[0-9]{12,13}[x]{0,1}&#39;</span>, 
+	<span style="color: #888888">-- regex flags; ignore case</span>
+	<span style="background-color: #fff0f0">&#39;i&#39;</span>
+))[<span style="color: #0000DD; font-weight: bold">1</span>]::<span style="color: #007020">varchar</span>(<span style="color: #0000DD; font-weight: bold">30</span>) <span style="color: #008800; font-weight: bold">as</span> search_isbn
+
+<span style="color: #008800; font-weight: bold">FROM</span>
+sierra_view.varfield <span style="color: #008800; font-weight: bold">AS</span> v
+
+<span style="color: #008800; font-weight: bold">WHERE</span>
+v.marc_tag <span style="color: #333333">||</span> v.varfield_type_code <span style="color: #333333">=</span> <span style="background-color: #fff0f0">&#39;020i&#39;</span>
+
+<span style="color: #008800; font-weight: bold">LIMIT</span> <span style="color: #0000DD; font-weight: bold">100</span>
+</pre></div>
