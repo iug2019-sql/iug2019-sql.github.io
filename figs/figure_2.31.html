@@ -1,135 +1,137 @@
 <!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%"><span style="color: #008800; font-weight: bold">DROP</span> <span style="color: #008800; font-weight: bold">TABLE</span> IF <span style="color: #008800; font-weight: bold">EXISTS</span> temp_hold_data;
-<span style="color: #888888">-- temp table `temp_hold_data for use later...</span>
-<span style="color: #008800; font-weight: bold">CREATE</span> TEMP <span style="color: #008800; font-weight: bold">TABLE</span> temp_hold_data <span style="color: #008800; font-weight: bold">AS</span>
-<span style="color: #008800; font-weight: bold">SELECT</span>
-<span style="color: #008800; font-weight: bold">CASE</span>
-<span style="color: #008800; font-weight: bold">WHEN</span> r.record_type_code <span style="color: #333333">=</span> <span style="background-color: #fff0f0">&#39;i&#39;</span> <span style="color: #008800; font-weight: bold">THEN</span> (
+	<span style="color: #888888">-- temp table `temp_hold_data for use later...</span>
+	<span style="color: #008800; font-weight: bold">CREATE</span> TEMP <span style="color: #008800; font-weight: bold">TABLE</span> temp_hold_data <span style="color: #008800; font-weight: bold">AS</span>
 	<span style="color: #008800; font-weight: bold">SELECT</span>
-	l.bib_record_id
+	<span style="color: #008800; font-weight: bold">CASE</span>
+	<span style="color: #008800; font-weight: bold">WHEN</span> r.record_type_code <span style="color: #333333">=</span> <span style="background-color: #fff0f0">&#39;i&#39;</span> <span style="color: #008800; font-weight: bold">THEN</span> (
+		<span style="color: #008800; font-weight: bold">SELECT</span>
+		l.bib_record_id
+		<span style="color: #008800; font-weight: bold">FROM</span>
+		sierra_view.bib_record_item_record_link <span style="color: #008800; font-weight: bold">as</span> l
+		<span style="color: #008800; font-weight: bold">WHERE</span>
+		l.item_record_id <span style="color: #333333">=</span> h.record_id
+		<span style="color: #008800; font-weight: bold">LIMIT</span> <span style="color: #0000DD; font-weight: bold">1</span>
+	)
+	<span style="color: #008800; font-weight: bold">WHEN</span> r.record_type_code <span style="color: #333333">=</span> <span style="background-color: #fff0f0">&#39;j&#39;</span> <span style="color: #008800; font-weight: bold">THEN</span> (
+		<span style="color: #008800; font-weight: bold">SELECT</span>
+		l.bib_record_id
+		<span style="color: #008800; font-weight: bold">FROM</span>
+		sierra_view.bib_record_volume_record_link <span style="color: #008800; font-weight: bold">as</span> l
+		<span style="color: #008800; font-weight: bold">WHERE</span>
+		l.volume_record_id <span style="color: #333333">=</span> h.record_id
+		<span style="color: #008800; font-weight: bold">LIMIT</span> <span style="color: #0000DD; font-weight: bold">1</span>
+	)
+	<span style="color: #008800; font-weight: bold">WHEN</span> r.record_type_code <span style="color: #333333">=</span> <span style="background-color: #fff0f0">&#39;b&#39;</span> <span style="color: #008800; font-weight: bold">THEN</span> (
+		h.record_id
+	)
+	<span style="color: #008800; font-weight: bold">ELSE</span> <span style="color: #008800; font-weight: bold">NULL</span>
+	<span style="color: #008800; font-weight: bold">END</span> <span style="color: #008800; font-weight: bold">AS</span> bib_record_id,
+	r.record_type_code, r.record_num,
+	p.ptype_code, h.<span style="color: #333333">*</span>
 	<span style="color: #008800; font-weight: bold">FROM</span>
-	sierra_view.bib_record_item_record_link <span style="color: #008800; font-weight: bold">as</span> l
-	<span style="color: #008800; font-weight: bold">WHERE</span>
-	l.item_record_id <span style="color: #333333">=</span> h.record_id
-	<span style="color: #008800; font-weight: bold">LIMIT</span> <span style="color: #0000DD; font-weight: bold">1</span>
-)
-<span style="color: #008800; font-weight: bold">WHEN</span> r.record_type_code <span style="color: #333333">=</span> <span style="background-color: #fff0f0">&#39;j&#39;</span> <span style="color: #008800; font-weight: bold">THEN</span> (
-	<span style="color: #008800; font-weight: bold">SELECT</span>
-	l.bib_record_id
-	<span style="color: #008800; font-weight: bold">FROM</span>
-	sierra_view.bib_record_volume_record_link <span style="color: #008800; font-weight: bold">as</span> l
-	<span style="color: #008800; font-weight: bold">WHERE</span>
-	l.volume_record_id <span style="color: #333333">=</span> h.record_id
-	<span style="color: #008800; font-weight: bold">LIMIT</span> <span style="color: #0000DD; font-weight: bold">1</span>
-)
-<span style="color: #008800; font-weight: bold">WHEN</span> r.record_type_code <span style="color: #333333">=</span> <span style="background-color: #fff0f0">&#39;b&#39;</span> <span style="color: #008800; font-weight: bold">THEN</span> (
-	h.record_id
-)
-<span style="color: #008800; font-weight: bold">ELSE</span> <span style="color: #008800; font-weight: bold">NULL</span>
-<span style="color: #008800; font-weight: bold">END</span> <span style="color: #008800; font-weight: bold">AS</span> bib_record_id,
-r.record_type_code, r.record_num,
-p.ptype_code, h.<span style="color: #333333">*</span>
-<span style="color: #008800; font-weight: bold">FROM</span>
-sierra_view.<span style="color: #008800; font-weight: bold">hold</span> <span style="color: #008800; font-weight: bold">AS</span> h
-<span style="color: #008800; font-weight: bold">JOIN</span>
-sierra_view.record_metadata <span style="color: #008800; font-weight: bold">AS</span> r
-<span style="color: #008800; font-weight: bold">ON</span>
-  r.id <span style="color: #333333">=</span> h.record_id
-<span style="color: #008800; font-weight: bold">JOIN</span>
-sierra_view.patron_record <span style="color: #008800; font-weight: bold">AS</span> p
-<span style="color: #008800; font-weight: bold">ON</span>
-  p.record_id <span style="color: #333333">=</span> h.patron_record_id
-;
-<span style="color: #888888">---</span>
-
-<span style="color: #008800; font-weight: bold">CREATE</span> <span style="color: #008800; font-weight: bold">INDEX</span> temp_hold_data_bib_record_id <span style="color: #008800; font-weight: bold">ON</span> temp_hold_data(bib_record_id);
-<span style="color: #008800; font-weight: bold">ANALYZE</span> temp_hold_data;
-
-<span style="color: #888888">---</span>
-<span style="color: #888888">-- produce row output per bib_record_id (title) with a list of the </span>
-<span style="color: #888888">-- pickup locations, and a count of the number of holds on that title</span>
-<span style="color: #008800; font-weight: bold">DROP</span> <span style="color: #008800; font-weight: bold">TABLE</span> IF <span style="color: #008800; font-weight: bold">EXISTS</span> temp_title_item_counts;
-<span style="color: #008800; font-weight: bold">CREATE</span> TEMP <span style="color: #008800; font-weight: bold">TABLE</span> temp_title_item_counts <span style="color: #008800; font-weight: bold">AS</span>
-<span style="color: #008800; font-weight: bold">WITH</span> distinct_titles <span style="color: #008800; font-weight: bold">AS</span> (
-	<span style="color: #008800; font-weight: bold">SELECT</span>
-	t.bib_record_id,
-	<span style="color: #888888">-- here we know that all record_nums are going to be bib_record_num</span>
-	<span style="color: #888888">-- since below we limit to record_type_code = &#39;b&#39;</span>
-	t.record_num <span style="color: #008800; font-weight: bold">as</span> bib_record_num,
-	string_agg(t.pickup_location_code::<span style="color: #007020">TEXT</span>, <span style="background-color: #fff0f0">&#39;,&#39;</span>) <span style="color: #008800; font-weight: bold">AS</span> pickup_locations,
-	<span style="color: #008800; font-weight: bold">COUNT</span>(<span style="color: #333333">*</span>) <span style="color: #008800; font-weight: bold">as</span> count_holds_title
-	<span style="color: #008800; font-weight: bold">FROM</span>
-	temp_hold_data <span style="color: #008800; font-weight: bold">as</span> t
-	<span style="color: #888888">-- this time, limit only to bib_level_holds, and </span>
-	<span style="color: #888888">-- patrons that are ptype 0</span>
-	<span style="color: #008800; font-weight: bold">WHERE</span>
-	t.record_type_code <span style="color: #333333">=</span> <span style="background-color: #fff0f0">&#39;b&#39;</span>
-	<span style="color: #008800; font-weight: bold">AND</span> t.ptype_code <span style="color: #333333">=</span> <span style="color: #0000DD; font-weight: bold">0</span>
-	<span style="color: #008800; font-weight: bold">GROUP</span> <span style="color: #008800; font-weight: bold">BY</span>
-	t.bib_record_id,
-	t.record_num
-)
-
-<span style="color: #008800; font-weight: bold">SELECT</span>
-d.bib_record_id,
-<span style="background-color: #fff0f0">&#39;b&#39;</span> <span style="color: #333333">||</span> d.bib_record_num <span style="color: #333333">||</span> <span style="background-color: #fff0f0">&#39;a&#39;</span> <span style="color: #008800; font-weight: bold">AS</span> bib_record_num,
-d.count_holds_title,
-(
-	<span style="color: #008800; font-weight: bold">SELECT</span>
-	<span style="color: #008800; font-weight: bold">COUNT</span>(<span style="color: #333333">*</span>)
-	<span style="color: #008800; font-weight: bold">FROM</span>
-	sierra_view.bib_record_item_record_link <span style="color: #008800; font-weight: bold">AS</span> l
+	sierra_view.<span style="color: #008800; font-weight: bold">hold</span> <span style="color: #008800; font-weight: bold">AS</span> h
 	<span style="color: #008800; font-weight: bold">JOIN</span>
-	sierra_view.item_record <span style="color: #008800; font-weight: bold">AS</span> i
+	sierra_view.record_metadata <span style="color: #008800; font-weight: bold">AS</span> r
 	<span style="color: #008800; font-weight: bold">ON</span>
-	  i.record_id <span style="color: #333333">=</span> l.item_record_id
-	<span style="color: #008800; font-weight: bold">LEFT</span> <span style="color: #008800; font-weight: bold">OUTER</span> <span style="color: #008800; font-weight: bold">JOIN</span>
-	sierra_view.checkout <span style="color: #008800; font-weight: bold">as</span> <span style="color: #008800; font-weight: bold">c</span>
+	  r.id <span style="color: #333333">=</span> h.record_id
+	<span style="color: #008800; font-weight: bold">JOIN</span>
+	sierra_view.patron_record <span style="color: #008800; font-weight: bold">AS</span> p
 	<span style="color: #008800; font-weight: bold">ON</span>
-	  <span style="color: #008800; font-weight: bold">c</span>.item_record_id <span style="color: #333333">=</span> l.item_record_id
-	<span style="color: #008800; font-weight: bold">WHERE</span>
-	l.bib_record_id <span style="color: #333333">=</span> d.bib_record_id
-	<span style="color: #888888">-- item has a status code of something that we&#39;d want to see 	</span>
-	<span style="color: #008800; font-weight: bold">AND</span> i.item_status_code <span style="color: #008800; font-weight: bold">IN</span> (
-		<span style="background-color: #fff0f0">&#39;-&#39;</span>, <span style="background-color: #fff0f0">&#39;!&#39;</span>, <span style="background-color: #fff0f0">&#39;b&#39;</span>, <span style="background-color: #fff0f0">&#39;p&#39;</span>, <span style="background-color: #fff0f0">&#39;(&#39;</span>, <span style="background-color: #fff0f0">&#39;@&#39;</span>, <span style="background-color: #fff0f0">&#39;)&#39;</span>, <span style="background-color: #fff0f0">&#39;_&#39;</span>, <span style="background-color: #fff0f0">&#39;=&#39;</span>, <span style="background-color: #fff0f0">&#39;+&#39;</span>
+	  p.record_id <span style="color: #333333">=</span> h.patron_record_id
+	;
+	<span style="color: #888888">---</span>
+	
+	<span style="color: #008800; font-weight: bold">CREATE</span> <span style="color: #008800; font-weight: bold">INDEX</span> temp_hold_data_bib_record_id <span style="color: #008800; font-weight: bold">ON</span> temp_hold_data(bib_record_id);
+	<span style="color: #008800; font-weight: bold">ANALYZE</span> temp_hold_data;
+	
+	<span style="color: #888888">---</span>
+	<span style="color: #888888">-- produce row output per bib_record_id (title) with a list of the </span>
+	<span style="color: #888888">-- pickup locations, and a count of the number of holds on that title</span>
+	<span style="color: #008800; font-weight: bold">DROP</span> <span style="color: #008800; font-weight: bold">TABLE</span> IF <span style="color: #008800; font-weight: bold">EXISTS</span> temp_title_item_counts;
+	<span style="color: #008800; font-weight: bold">CREATE</span> TEMP <span style="color: #008800; font-weight: bold">TABLE</span> temp_title_item_counts <span style="color: #008800; font-weight: bold">AS</span>
+	<span style="color: #008800; font-weight: bold">WITH</span> distinct_titles <span style="color: #008800; font-weight: bold">AS</span> (
+		<span style="color: #008800; font-weight: bold">SELECT</span>
+		t.bib_record_id,
+		<span style="color: #888888">-- here we know that all record_nums are going to be bib_record_num</span>
+		<span style="color: #888888">-- since below we limit to record_type_code = &#39;b&#39;</span>
+		t.record_num <span style="color: #008800; font-weight: bold">as</span> bib_record_num,
+		string_agg(t.pickup_location_code::<span style="color: #007020">TEXT</span>, <span style="background-color: #fff0f0">&#39;,&#39;</span>) <span style="color: #008800; font-weight: bold">AS</span> pickup_locations,
+		<span style="color: #008800; font-weight: bold">COUNT</span>(<span style="color: #333333">*</span>) <span style="color: #008800; font-weight: bold">as</span> count_holds_title
+		<span style="color: #008800; font-weight: bold">FROM</span>
+		temp_hold_data <span style="color: #008800; font-weight: bold">as</span> t
+		<span style="color: #888888">-- this time, limit only to bib_level_holds, and </span>
+		<span style="color: #888888">-- patrons that are ptype 0</span>
+		<span style="color: #008800; font-weight: bold">WHERE</span>
+		t.record_type_code <span style="color: #333333">=</span> <span style="background-color: #fff0f0">&#39;b&#39;</span>
+		<span style="color: #008800; font-weight: bold">AND</span> t.ptype_code <span style="color: #333333">=</span> <span style="color: #0000DD; font-weight: bold">0</span>
+		<span style="color: #008800; font-weight: bold">GROUP</span> <span style="color: #008800; font-weight: bold">BY</span>
+		t.bib_record_id,
+		t.record_num
 	)
-	<span style="color: #008800; font-weight: bold">AND</span> COALESCE(
-		<span style="color: #888888">--if this age is &gt;= 60 days, it&#39;ll return FALSE, </span>
-		<span style="color: #888888">-- and not count as an &quot;available item&quot;</span>
-		age(<span style="color: #008800; font-weight: bold">c</span>.due_gmt) <span style="color: #333333">&lt;</span> <span style="background-color: #fff0f0">&#39;60 days&#39;</span>::<span style="color: #007020">INTERVAL</span>,
-		<span style="color: #888888">-- if there is no due_gmt value (NULL) return TRUE 		</span>
-		<span style="color: #008800; font-weight: bold">TRUE</span>
-	)
-) <span style="color: #008800; font-weight: bold">AS</span> count_items_available,
-d.pickup_locations
-<span style="color: #008800; font-weight: bold">FROM</span>
-distinct_titles <span style="color: #008800; font-weight: bold">AS</span> d
-;
-
-<span style="color: #008800; font-weight: bold">SELECT</span>
-t.bib_record_id,
-t.bib_record_num,
-t.count_holds_title,
-t.count_items_available,
-<span style="color: #008800; font-weight: bold">CASE</span>
-	<span style="color: #008800; font-weight: bold">WHEN</span> t.count_items_available <span style="color: #333333">=</span> <span style="color: #0000DD; font-weight: bold">0</span> <span style="color: #008800; font-weight: bold">THEN</span> <span style="color: #008800; font-weight: bold">NULL</span>
-	<span style="color: #888888">-- formatting for output with to_char	</span>
-	<span style="color: #888888">-- https://www.postgresql.org/docs/current/functions-formatting.html#FUNCTIONS-FORMATTING-EXAMPLES-TABLE</span>
-	<span style="color: #888888">-- also, cast the INTEGER count values to numeric so that we get a float value back on division</span>
-	<span style="color: #008800; font-weight: bold">ELSE</span> to_char(
-		(t.count_holds_title::<span style="color: #007020">NUMERIC</span> <span style="color: #333333">/</span> t.count_items_available::<span style="color: #007020">NUMERIC</span>),
-		<span style="background-color: #fff0f0">&#39;FM999999999.00&#39;</span>)
-<span style="color: #008800; font-weight: bold">END</span> <span style="color: #008800; font-weight: bold">AS</span> hold_to_item_ratio,
-p.best_title,
-<span style="color: #888888">-- bring in this value later if we want</span>
-<span style="color: #888888">-- p.best_author,</span>
-t.pickup_locations
-
-<span style="color: #008800; font-weight: bold">FROM</span>
-temp_title_item_counts <span style="color: #008800; font-weight: bold">as</span> t
-
-<span style="color: #008800; font-weight: bold">JOIN</span>
-sierra_view.bib_record_property <span style="color: #008800; font-weight: bold">AS</span> p
-<span style="color: #008800; font-weight: bold">ON</span>
-  p.bib_record_id <span style="color: #333333">=</span> t.bib_record_id
-;
-</pre></div>
+	
+	<span style="color: #008800; font-weight: bold">SELECT</span>
+	d.bib_record_id,
+	<span style="background-color: #fff0f0">&#39;b&#39;</span> <span style="color: #333333">||</span> d.bib_record_num <span style="color: #333333">||</span> <span style="background-color: #fff0f0">&#39;a&#39;</span> <span style="color: #008800; font-weight: bold">AS</span> bib_record_num,
+	d.count_holds_title,
+	(
+		<span style="color: #008800; font-weight: bold">SELECT</span>
+		<span style="color: #008800; font-weight: bold">COUNT</span>(<span style="color: #333333">*</span>)
+		<span style="color: #008800; font-weight: bold">FROM</span>
+		sierra_view.bib_record_item_record_link <span style="color: #008800; font-weight: bold">AS</span> l
+		<span style="color: #008800; font-weight: bold">JOIN</span>
+		sierra_view.item_record <span style="color: #008800; font-weight: bold">AS</span> i
+		<span style="color: #008800; font-weight: bold">ON</span>
+		  i.record_id <span style="color: #333333">=</span> l.item_record_id
+		<span style="color: #008800; font-weight: bold">LEFT</span> <span style="color: #008800; font-weight: bold">OUTER</span> <span style="color: #008800; font-weight: bold">JOIN</span>
+		sierra_view.checkout <span style="color: #008800; font-weight: bold">as</span> <span style="color: #008800; font-weight: bold">c</span>
+		<span style="color: #008800; font-weight: bold">ON</span>
+		  <span style="color: #008800; font-weight: bold">c</span>.item_record_id <span style="color: #333333">=</span> l.item_record_id
+		<span style="color: #008800; font-weight: bold">WHERE</span>
+		l.bib_record_id <span style="color: #333333">=</span> d.bib_record_id
+		<span style="color: #888888">-- item has a status code of something that we&#39;d want to see 	</span>
+		<span style="color: #008800; font-weight: bold">AND</span> i.item_status_code <span style="color: #008800; font-weight: bold">IN</span> (
+			<span style="background-color: #fff0f0">&#39;-&#39;</span>, <span style="background-color: #fff0f0">&#39;!&#39;</span>, <span style="background-color: #fff0f0">&#39;b&#39;</span>, <span style="background-color: #fff0f0">&#39;p&#39;</span>, <span style="background-color: #fff0f0">&#39;(&#39;</span>, <span style="background-color: #fff0f0">&#39;@&#39;</span>, <span style="background-color: #fff0f0">&#39;)&#39;</span>, <span style="background-color: #fff0f0">&#39;_&#39;</span>, <span style="background-color: #fff0f0">&#39;=&#39;</span>, <span style="background-color: #fff0f0">&#39;+&#39;</span>
+		)
+		<span style="color: #008800; font-weight: bold">AND</span> COALESCE(
+			<span style="color: #888888">--if this age is &gt;= 60 days, it&#39;ll return FALSE, </span>
+			<span style="color: #888888">-- and not count as an &quot;available item&quot;</span>
+			age(<span style="color: #008800; font-weight: bold">c</span>.due_gmt) <span style="color: #333333">&lt;</span> <span style="background-color: #fff0f0">&#39;60 days&#39;</span>::<span style="color: #007020">INTERVAL</span>,
+			<span style="color: #888888">-- if there is no due_gmt value (NULL) return TRUE 		</span>
+			<span style="color: #008800; font-weight: bold">TRUE</span>
+		)
+	) <span style="color: #008800; font-weight: bold">AS</span> count_items_available,
+	d.pickup_locations
+	<span style="color: #008800; font-weight: bold">FROM</span>
+	distinct_titles <span style="color: #008800; font-weight: bold">AS</span> d
+	;
+	
+	<span style="color: #008800; font-weight: bold">SELECT</span>
+	t.bib_record_id,
+	t.bib_record_num,
+	t.count_holds_title,
+	t.count_items_available,
+	<span style="color: #008800; font-weight: bold">CASE</span>
+		<span style="color: #008800; font-weight: bold">WHEN</span> t.count_items_available <span style="color: #333333">=</span> <span style="color: #0000DD; font-weight: bold">0</span> <span style="color: #008800; font-weight: bold">THEN</span> <span style="color: #008800; font-weight: bold">NULL</span>
+		<span style="color: #888888">-- formatting for output with to_char	</span>
+		<span style="color: #888888">-- https://www.postgresql.org/docs/current/functions-formatting.html#FUNCTIONS-FORMATTING-EXAMPLES-TABLE</span>
+		<span style="color: #888888">-- also, cast the INTEGER count values to numeric so that we get a float value back on division</span>
+		<span style="color: #008800; font-weight: bold">ELSE</span> ROUND(
+			(t.count_holds_title::<span style="color: #007020">NUMERIC</span> <span style="color: #333333">/</span> t.count_items_available::<span style="color: #007020">NUMERIC</span>),
+			<span style="color: #0000DD; font-weight: bold">2</span>
+		)
+	<span style="color: #008800; font-weight: bold">END</span> <span style="color: #008800; font-weight: bold">AS</span> hold_to_item_ratio,
+	p.best_title,
+	<span style="color: #888888">-- bring in this value later if we want</span>
+	<span style="color: #888888">-- p.best_author,</span>
+	t.pickup_locations
+	
+	<span style="color: #008800; font-weight: bold">FROM</span>
+	temp_title_item_counts <span style="color: #008800; font-weight: bold">as</span> t
+	
+	<span style="color: #008800; font-weight: bold">JOIN</span>
+	sierra_view.bib_record_property <span style="color: #008800; font-weight: bold">AS</span> p
+	<span style="color: #008800; font-weight: bold">ON</span>
+	  p.bib_record_id <span style="color: #333333">=</span> t.bib_record_id
+	;
+	</pre></div>
+	
