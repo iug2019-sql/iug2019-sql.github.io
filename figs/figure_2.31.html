@@ -112,9 +112,7 @@
 	t.count_items_available,
 	<span style="color: #008800; font-weight: bold">CASE</span>
 		<span style="color: #008800; font-weight: bold">WHEN</span> t.count_items_available <span style="color: #333333">=</span> <span style="color: #0000DD; font-weight: bold">0</span> <span style="color: #008800; font-weight: bold">THEN</span> <span style="color: #008800; font-weight: bold">NULL</span>
-		<span style="color: #888888">-- formatting for output with to_char	</span>
-		<span style="color: #888888">-- https://www.postgresql.org/docs/current/functions-formatting.html#FUNCTIONS-FORMATTING-EXAMPLES-TABLE</span>
-		<span style="color: #888888">-- also, cast the INTEGER count values to numeric so that we get a float value back on division</span>
+		<span style="color: #888888">-- round results to 2 places after the decimal</span>
 		<span style="color: #008800; font-weight: bold">ELSE</span> ROUND(
 			(t.count_holds_title::<span style="color: #007020">NUMERIC</span> <span style="color: #333333">/</span> t.count_items_available::<span style="color: #007020">NUMERIC</span>),
 			<span style="color: #0000DD; font-weight: bold">2</span>

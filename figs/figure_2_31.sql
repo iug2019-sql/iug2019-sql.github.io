@@ -112,9 +112,7 @@ t.count_holds_title,
 t.count_items_available,
 CASE
 	WHEN t.count_items_available = 0 THEN NULL
-	-- formatting for output with to_char	
-	-- https://www.postgresql.org/docs/current/functions-formatting.html#FUNCTIONS-FORMATTING-EXAMPLES-TABLE
-	-- also, cast the INTEGER count values to numeric so that we get a float value back on division
+	-- round results to 2 places after the decimal
 	ELSE ROUND(
 		(t.count_holds_title::NUMERIC / t.count_items_available::NUMERIC),
 		2
