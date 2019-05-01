@@ -19,7 +19,7 @@ Part 2:
 Tip and Tricks:
 
 * [Jeremy Goldstein](https://github.com/jmgold/SQL-Queries/wiki/Useful-Code-snippets)
-* [Ray Voelker](https://github.com/iug2019-sql/iug2019-sql.github.io/blob/master/tips_and_tricks.md)
+* [Ray Voelker](https://github.com/plch/sierra-sql/wiki/Sierra-SQL-Tips-and-Tricks)
 * [Tips from IUG2019 Presentation](https://github.com/iug2019-sql/iug2019-sql.github.io/blob/master/tips_and_tricks.md)
 
 Notable Sierra SQL Repositories On Github:
