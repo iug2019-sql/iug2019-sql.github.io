@@ -28,3 +28,5 @@ Notable Sierra SQL Repositories On Github:
 * [Minuteman Library Network](https://github.com/jmgold/SQL-Queries/wiki)
 * [The University of North Carolina at Chapel Hill](https://github.com/UNC-Libraries/III-Sierra-SQL/wiki)
 * [Joe Montibello](https://github.com/joemontibello/iii-sql-queries)
+
+[Join the Sierra-ILS Slack Workspace](https://join.slack.com/t/sierra-ils/shared_invite/enQtMzgwNDc4MTcxOTA5LWFkZDdhODIxNTY1MzIyMTI4MmM2YTk1MDQzMzY4MmZjYzcyMGY1NWQwM2UzMTBmZDE2NTVhZDJmMTZjN2ZlMTU)
