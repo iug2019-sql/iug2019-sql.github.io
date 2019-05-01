@@ -19,7 +19,7 @@ Part 2:
 
 Notable Sierra SQL Repositories On Github:
 
-[The Public Library of Cincinnati and Hamilton County](https://github.com/plch/sierra-sql/wiki)
-[Minuteman Library Network](https://github.com/jmgold/SQL-Queries/wiki)
-[The University of North Carolina at Chapel Hill](https://github.com/UNC-Libraries/III-Sierra-SQL/wiki)
-[Joe Montibello](https://github.com/joemontibello/iii-sql-queries)
+* [The Public Library of Cincinnati and Hamilton County](https://github.com/plch/sierra-sql/wiki)
+* [Minuteman Library Network](https://github.com/jmgold/SQL-Queries/wiki)
+* [The University of North Carolina at Chapel Hill](https://github.com/UNC-Libraries/III-Sierra-SQL/wiki)
+* [Joe Montibello](https://github.com/joemontibello/iii-sql-queries)
