@@ -12,11 +12,11 @@ ___
   * `record_num`: record number used by the SDA and the webpac / encore
   * `creation_date_gmt`: date the record entered the system (different from a cataloged date)
   * `deletion_date_gmt`: deleted records will have no other information in the system other than info left in this table
-  * `campus_code`: useful for telling if the record is from ILL
   * `record_last_updated_gmt` : when the record was last modified
+  * `campus_code`: useful for telling if the record is from ILL
+    * **Note** that this field **won't** have a `NULL` value; instead, it's blank or `''` in cases where there is no `campus_code`
 
-* It's useful to JOIN to this table, as it can be used to filter out records that don't "belong" to the library (ILL). 
-* **Note** that this field won't have a `NULL` value; instead, it's blank or `''` in cases where there is no `campus_code`
+* It's useful to JOIN to this table, as it can be used to filter out records that don't "belong" to the library (ILL) using the `campus_code` as shown below (note the use of `campus_code` being blank as the filtering condition in the WHERE clause):
 
 ```sql
 -- find titles that have been cataloged in the last 7 days
