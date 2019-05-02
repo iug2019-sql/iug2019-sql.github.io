@@ -184,6 +184,7 @@ LIMIT 100
 ### `sierra_view.bool_info`
 
 * This table has a column called `sql_query` that could be useful for seeing the underlying SQL for create list searches.
+
 ___
 
 
@@ -209,9 +210,9 @@ CONCAT(NULL, 'mind your ', NULL, 'values!') AS ex_3
 ```
 
 Output:
-ex1 | ex2 | ex3
---- | --- | ---
-`NULL` | "remember that COALESCE returns first non-null value!" | "mind your values!"
+| ex1 | ex2 | ex3 |
+| --- | --- | --- |
+| `NULL` | "remember that COALESCE returns first non-null value!" | "mind your values!" |
 
 ___
 
@@ -346,6 +347,25 @@ e.index_tag || e.index_entry = 'b' || LOWER('A000052469475')
 --  Index Cond: (((index_tag)::text || (index_entry)::text) = 'ba000052469475'::text)
 ```
 
+This is the INCORRECT way (just to demonstrate how drastic the difference is of using an index VS not using one)
+
+```sql
+SELECT
+e.record_id
+FROM
+sierra_view.phrase_entry as e
+WHERE
+e.index_tag = 'b' 
+AND e.index_entry = LOWER('A000052469475')
+-- 28 secs execution time!!!!
+-- EXPLAIN:
+-- Seq Scan on phrase_entry  (cost=0.00..1783427.78 rows=20 width=8)
+--  Filter: (((index_tag)::text = 'b'::text) AND ((index_entry)::text = 'a000052469475'::text))
+
+--
+-- sequential scan = bad!
+
+```
 ___
 
 ___
