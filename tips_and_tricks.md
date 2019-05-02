@@ -112,6 +112,16 @@ LIMIT 1000
 * Contains code and name values for their respective field
 * Use to provide translations for system codes
 
+```sql
+SELECT
+p.name
+FROM
+sierra_view.item_record i
+JOIN
+sierra_view.itype_property_myuser p
+ON i.itype_code_num = p.code
+```
+
 ### `sierra_view.iii user_desktop_option`
 
 * `desktop_option_id` isn't documented, but you may be able to figure out the option by a combination of `value`, and `iii_user_id` or `user_name` ... good luck!
