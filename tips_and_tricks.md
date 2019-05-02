@@ -1,5 +1,5 @@
 # Sierra SQL Tips And Tricks: IUG 2019
-
+![iug2019-logo.png](https://github.com/iug2019-sql/iug2019-sql.github.io/raw/master/img/iug2019-logo.png "IUG 2019")
 ___
 
 ## Tables of Note
@@ -186,6 +186,35 @@ LIMIT 100
 * This table has a column called `sql_query` that could be useful for seeing the underlying SQL for create list searches.
 ___
 
+
+___
+
+## Account for possible NULL Values!
+
+`NULL` is a special value, and you should account for cases where a value can be `NULL`, as it can result in unexpected behavior.
+
+Use `CONCAT()` function, which is NULL safe, or `COALESCE()` function, which returns the **first** non-null value.
+
+```sql
+SELECT
+-- string concatenatination with operator ||
+NULL || 'where did this go?!?!' AS ex_1,
+
+-- string concatenatination with operator ||
+COALESCE(NULL, '', 'we don''t get here') || 'remember that COALESCE returns first non-null value!' AS ex_2,
+
+-- string concatenation with CONCAT function (which is NULL safe)
+CONCAT(NULL, 'mind your ', NULL, 'values!') AS ex_3
+
+```
+
+Output:
+ex1 | ex2 | ex3
+--- | --- | ---
+`NULL` | "remember that COALESCE returns first non-null value!" | "mind your values!"
+
+___
+
 ___
 
 ## Picking the Correct Key to JOIN On
@@ -289,8 +318,10 @@ FROM
 pg_indexes
 WHERE
 tablename = 'phrase_entry'
--- tablename NOTE LIKE 'pg%'
+-- tablename NOT LIKE 'pg%'
 ORDER BY
+schemaname,
+tablename,
 indexname
 ;
 ```
@@ -410,3 +441,60 @@ p.record_id = 481037682097
 ```
 
 ___
+
+___
+
+## Helpful / useful queries
+
+### Get info about indexes / tables postgres database
+
+```sql
+-- find indexes!
+-- NOTE that these indexes are defined not on the view,
+-- but on the iiirecord. The tables and views are assumed 
+-- to be similarly named, but that's not guaranteed
+SELECT
+*
+FROM
+pg_indexes
+WHERE
+tablename = 'phrase_entry'
+-- tablename NOT LIKE 'pg%' -- use this to find ALL indexes
+ORDER BY
+schemaname,
+tablename,
+indexname
+;
+```
+
+
+```sql
+-- show detailed view of `sierra_view` table_schema
+SELECT
+*
+FROM
+information_schema.columns
+
+WHERE
+table_schema = 'sierra_view'
+
+ORDER BY
+table_name,
+ordinal_position
+;
+
+```
+
+```sql
+-- show all tables
+SELECT
+*
+FROM
+pg_catalog.pg_tables
+ORDER BY
+tablename
+;
+```
+
+
+```
