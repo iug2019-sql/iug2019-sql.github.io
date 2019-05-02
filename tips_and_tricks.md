@@ -1,5 +1,5 @@
 # Sierra SQL Tips And Tricks: IUG 2019
-![iug2019-logo.png](https://github.com/iug2019-sql/iug2019-sql.github.io/raw/master/img/iug2019-logo.png "IUG 2019")
+![iug2019-logo_small.png](https://github.com/iug2019-sql/iug2019-sql.github.io/raw/master/img/iug2019-logo_small.png "IUG 2019")
 ___
 
 ## Tables of Note
@@ -494,7 +494,4 @@ pg_catalog.pg_tables
 ORDER BY
 tablename
 ;
-```
-
-
 ```
