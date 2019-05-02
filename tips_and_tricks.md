@@ -185,7 +185,7 @@ LIMIT 100
 
 * This table has a column called `sql_query` that could be useful for seeing the underlying SQL for create list searches.
 
-'''sql
+```sql
 --Count the number of owning libraries for each title in a review file
 --Pass query a review file of items to be weeded
 --Check to see which other locations own those titles and how they've performed system wide prior to deleting records
@@ -213,7 +213,7 @@ JOIN Sierra_view.bib_record_item_record_link as bi ON b.id = bi.bib_record_id
 JOIN sierra_view.item_record as i ON bi.item_record_id = i.id
 JOIN sierra_view.record_metadata AS rm ON bi.item_record_id = rm.id
 group by 1, 2, 5;
-'''
+```
 
 ___
 
