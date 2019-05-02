@@ -38,6 +38,28 @@ AND b.is_suppressed IS FALSE
 AND AGE(b.cataloging_date_gmt) <= '7 days'::INTERVAL
 ```
 
+`sierra_view.record_metadata` is also useful for obtaining the `record_num` from a `record_id` (`record_num` is used in the SDA, webpac / encore for identifying a record). We can JOIN `sierra_view.record_metadata`, appending the columns (generic checkdigit character, `a` can be added to the end for cases where a checkdigit is needed):
+
+```sql
+sierra_view.record_type_code || sierra_view.record_number || 'a'
+```
+
+Example:
+
+```sql
+SELECT
+r.record_type_code || r.record_num || 'a' as record_number
+
+FROM
+sierra_view.record_metadata as r
+
+WHERE
+r.record_type_code || r.campus_code = 'p'
+and r.deletion_date_gmt is null
+
+limit 5
+```
+
 
 
 
@@ -166,6 +188,57 @@ ___
 
 ___
 
+## Picking the Correct Key to JOIN On
+
+Picking the correct primary / foreign keys for joins can be tricky.
+
+* Make sure you carefully examine the sierra DNA documentation
+* Columns named `id` generally are generally the **primary key**, as is the case in `sierra_view.record_metadata`. This means that it'll appear in other tables as the **foreign key**. For example:
+
+**INCORRECT:**
+
+```sql
+SELECT
+r.id,
+b.id,
+r.record_num
+FROM
+sierra_view.record_metadata as r
+
+JOIN
+sierra_view.bib_record as b
+ON
+  -- THIS IS NOT CORRECT AND WILL RETURN BAD DATA!!!
+  b.id = r.id
+
+LIMIT 100
+;
+```
+
+**CORRECT:**
+
+```sql
+SELECT
+r.id,
+b.id,
+r.record_num
+FROM
+sierra_view.record_metadata as r
+
+JOIN
+sierra_view.bib_record as b
+ON
+  -- THIS IS CORRECT (foreign key, `record_id` JOINed to primary key, `id` )
+  b.record_id = r.id
+
+LIMIT 100
+;
+```
+___
+
+
+___
+
 ## Unique SQL Queries (can't easily be done via the SDA / CreateLists)
 
 ```sql
@@ -193,3 +266,143 @@ WHERE
 c.location_code = 'none'
 ;
 ```
+
+___
+
+## Using Indexes Effectively
+
+Using an index can significantly speed up your query.
+
+We can determine what indexes exist (or don't exist) on table with a query similar to the following:
+
+```sql
+-- find indexes on phrase_entry ...
+-- or, find all indexes by removing
+-- tablename = 'phrase_entry'
+-- and uncommenting tablename NOTE LIKE 'pg%'
+--
+SELECT
+*
+FROM
+pg_indexes
+WHERE
+tablename = 'phrase_entry'
+-- tablename NOTE LIKE 'pg%'
+ORDER BY
+indexname
+;
+```
+which tells us that one of the following indexes exist:
+
+```sql
+CREATE INDEX idx_phrase_entry ON iiirecord.phrase_entry USING btree ((((index_tag)::text || (index_entry)::text)), type2, insert_title, record_key)
+```
+
+The following query will take advantage of the index, and result in a fast, efficient search (this particular example will search for barcode and return the record it is associated with):
+
+```sql
+SELECT
+e.record_id
+FROM
+sierra_view.phrase_entry as e
+WHERE
+e.index_tag || e.index_entry = 'b' || LOWER('A000052469475')
+-- 64 msec execution time
+-- EXPLAIN:
+-- Index Scan using idx_phrase_entry on phrase_entry  (cost=0.69..586.22 rows=143 width=8)
+--  Index Cond: (((index_tag)::text || (index_entry)::text) = 'ba000052469475'::text)
+```
+
+___
+
+## Unexpected 1 to Many Situations
+
+Sometimes we only expect 1 row of data to be returned, but we get multiple rows back.
+
+For example, this query:
+
+```sql
+SELECT
+p.record_id,
+v.field_content
+
+FROM
+sierra_view.patron_record as p
+
+JOIN
+sierra_view.varfield as v
+ON
+  v.record_id = p.record_id
+  AND v.varfield_type_code = 'b'
+
+WHERE
+p.record_id = 481037682097
+```
+
+returns the following data:
+
+```
+481037682097;12345679
+481037682097;12345678 / PREV ID
+```
+
+If we only want one row of data per patron record in our output, we have two options.
+
+1 Grab the first occurrence of the barcode only:
+
+```sql
+SELECT
+p.record_id,
+(	
+	-- subquery grabs the first occurance of the barcode
+	SELECT
+	v.field_content
+	FROM
+	sierra_view.varfield as v
+	WHERE
+	v.record_id = p.record_id
+	AND v.varfield_type_code = 'b'
+	ORDER BY
+	v.occ_num
+	LIMIT 1
+) as field_content
+
+FROM
+sierra_view.patron_record as p
+
+WHERE
+p.record_id = 481037682097
+```
+
+```
+481037682097;12345679
+```
+
+2 Aggregate all the barcodes into one column of data:
+
+```sql
+SELECT
+p.record_id,
+(	
+	-- subquery grabs all barcodes
+	SELECT
+	string_agg(v.field_content, ',' ORDER BY v.occ_num)
+	FROM
+	sierra_view.varfield as v
+	WHERE
+	v.record_id = p.record_id
+	AND v.varfield_type_code = 'b'
+) as fields_content
+
+FROM
+sierra_view.patron_record as p
+
+WHERE
+p.record_id = 481037682097
+```
+
+```
+481037682097;12345679,12345678 / PREV ID
+```
+
+___
