@@ -1,4 +1,4 @@
-# DRAFT Tips And Tricks
+# Sierra SQL Tips And Tricks: IUG 2019
 
 ___
 
@@ -269,6 +269,8 @@ c.location_code = 'none'
 
 ___
 
+___
+
 ## Using Indexes Effectively
 
 Using an index can significantly speed up your query.
@@ -315,7 +317,9 @@ e.index_tag || e.index_entry = 'b' || LOWER('A000052469475')
 
 ___
 
-## Unexpected 1 to Many Situations
+___
+
+## Unexpected One-to-Many Situations
 
 Sometimes we only expect 1 row of data to be returned, but we get multiple rows back.
 
