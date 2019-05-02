@@ -210,6 +210,7 @@ CONCAT(NULL, 'mind your ', NULL, 'values!') AS ex_3
 ```
 
 Output:
+
 | ex1 | ex2 | ex3 |
 | --- | --- | --- |
 | `NULL` | "remember that COALESCE returns first non-null value!" | "mind your values!" |
