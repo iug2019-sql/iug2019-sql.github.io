@@ -556,3 +556,18 @@ ORDER BY
 tablename
 ;
 ```
+
+___
+
+## Additional Resources
+
+* Sierra Specific SQL Collections
+  * **Ray Voelker** - Public Library of Cincinnati And Hamilton County Sierra SQL Wiki: [github.com/plch/sierra-sql/wiki](https://github.com/plch/sierra-sql/wiki)
+  * **Jeremy Goldstein** - Minuteman Library Network Sierra SQL Wiki: [github.com/jmgold/SQL-Queries/wiki](https://github.com/jmgold/SQL-Queries/wiki)
+  * **UNC Libraries** Sierra SQL Wiki: [github.com/UNC-Libraries/III-Sierra-SQL/wiki](https://github.com/UNC-Libraries/III-Sierra-SQL/wiki)
+* General SQL Tutorials / Instruction
+  * Codecademy: https://www.codecademy.com/catalog/language/sql
+  * WiseOwl Training Videos: https://www.wiseowl.co.uk/sql/videos/sql-selecting-data/
+  * Stanford free online mini-courses in SQL: https://lagunita.stanford.edu/courses/DB/2014/SelfPaced/about
+
+
